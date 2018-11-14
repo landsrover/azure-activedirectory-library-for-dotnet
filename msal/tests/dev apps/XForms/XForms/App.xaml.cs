@@ -41,6 +41,7 @@ namespace XForms
         public const string DefaultClientId = "4b0db8c2-9f26-4417-8bde-3f0e3656f8e0";
         public const string B2cClientId = "750a8822-a6d4-4127-bc0b-efbfacccbc28";
 
+        public const string RedirectUriOnAndroid = Microsoft.Identity.Core.Constants.DefaultRedirectUri; // will not work with embedded browser
         public const string RedirectUriOnIos = "adaliosxformsapp://com.yourcompany.xformsapp";
 
         public const string DefaultAuthority = "https://login.microsoftonline.com/common";
@@ -77,9 +78,14 @@ namespace XForms
             MsalPublicClient = new PublicClientApplication(ClientId, Authority);
 
             // Let Android set its own redirect uri
-            if (Device.RuntimePlatform == "iOS")
+            switch (Device.RuntimePlatform)
             {
-                MsalPublicClient.RedirectUri = RedirectUriOnIos;
+                case "iOS":
+                    MsalPublicClient.RedirectUri = RedirectUriOnIos;
+                    break;
+                case "Android":
+                    MsalPublicClient.RedirectUri = RedirectUriOnAndroid;
+                    break;
             }
 
             MsalPublicClient.ValidateAuthority = ValidateAuthority;
